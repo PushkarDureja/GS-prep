@@ -1,0 +1,216 @@
+ //DELETE NODE WITHOUT HEAD POINTER
+ LOGIC:swap current and next node and then remove next node
+    void deleteNode(Node node)
+    {
+        if(node==null || node.next==null)
+        return ;
+        
+            node.next=node.next.next;
+            
+            node.next=node.next.next;
+    }
+
+//MIRROR A BINARY TREE
+LOGIC:call DFS and swap node either in pre or post order
+    void mirror(Node node)
+    {
+        if(node==null )
+        return;
+
+        Node temp=node.right;
+        node.right=node.left;
+        node.left=temp;
+
+        mirror(node.left);
+        mirror(node.right);
+    }
+
+// WAVE ARRAY (UNSORTED ARRAY)
+//LOGIC: keep on arranging odd indexed elements correctly
+    public static void convertToWave(int arr[], int n){
+        int i=1;
+        while(i<arr.length){
+            if(arr[i]>arr[i-1])
+            arr[i-1]=((arr[i]+arr[i-1])-(arr[i]=arr[i-1]));
+            i+=2;
+        }
+    }
+
+//PRINT ALL ANAGRAMS TOGETHER
+LOGIC: sorted string vs list map
+    public List<List<String>> Anagrams(String[] list) {
+        HashMap<String,List<String>> map=new HashMap<>();
+        for(String s:list){
+            
+           int[] fmap=new int[26];
+           for(int i=0;i<s.length();i++)
+           fmap[s.charAt(i)-'a']++;
+           
+           StringBuilder sb=new StringBuilder();
+           for(int i=0;i<26;i++){
+               if(fmap[i]!=0){
+               sb.append((char)('a'+i));
+               sb.append(fmap[i]);
+               }
+           }
+           String sort=sb.toString();
+           if(!map.containsKey(sort)){
+               map.put(sort,new ArrayList<>());
+           }
+           map.get(sort).add(s);
+        }
+        List<List<String>> ans=new ArrayList<>();
+        for(String key:map.keySet()){
+            ans.add(map.get(key));
+        }
+        return ans;
+    }
+
+//SEGREGATE 0,1,2
+LOGIC:0 to i-1->0
+      i to pt-1-> unknown
+      pt to len-1->2
+public static void sort012(int arr[], int n){
+    int i=0,j=n-1;
+    int pt=0;
+    while(pt<=j){
+        if(arr[pt]==0){
+            swap(arr,i,pt);
+            i++;
+            pt++;
+        }else if(arr[pt]==1){
+            pt++;
+        }else{
+            swap(arr,j,pt);
+            j--;
+        }
+    }
+}
+ public static void swap(int[] arr,int i,int j){
+        arr[j]=((arr[i]+arr[j])-(arr[i]=arr[j]));
+    }
+
+
+//TOTAL SQUARE IN CHESS BOARD OF N*N
+LOGIC: ans=(n^2 + (n-1)^2 + (n-3)^2 +..........)
+    static Long squaresInChessBoard(Long N) {
+        return ((N*(N+1)*(2*N+1))/6);
+        // code here
+    }
+
+
+//SEARCH IN COL-ROW WISE SORTED ARRAY
+LOGIC: keep on last element on 1st row and check conditions
+	static boolean search(int mat[][], int n, int m, int x) 
+	{  
+	    int row=mat.length;
+	    int col=mat[0].length;
+	    int r=0,c=col-1;
+
+	    while(r<row && c>=0){
+	        if(mat[r][c]==x)
+	        return true;
+	        else if(mat[r][c]<x){
+	            r++;
+	        }else{
+	            c--;
+	        }
+	    }
+
+	    return false;
+	}
+
+//SMALLEST NUMBER FOLLOWING PATTERN
+LOGIC: in case of D-> push on stack + count++;
+       in case of I-> push on stack and pop until size !=0
+	public static void main (String[] args) {
+	    Scanner scn=new Scanner(System.in);
+	    int t=scn.nextInt();
+	    while(t-->0){
+	        String str=scn.next();
+	        int count=1;
+	        StringBuilder sb=new StringBuilder();
+	        Stack<Integer> st=new Stack<>();
+	        for(int i=0;i<str.length();i++){
+	            if(str.charAt(i)=='I'){
+	                st.push(count);
+	                count++;
+	                while(st.size()!=0){
+	                    sb.append(st.pop());
+	                }
+	            }else{
+	                st.push(count);
+	                count++;
+	            }
+	        }
+	        sb.append(count);
+	        while(st.size()!=0)
+	        sb.append(st.pop());
+	        System.out.println(sb.toString());
+	    }
+	}
+
+//SORT A STACK (ITERATIVE)
+	public Stack<Integer> sort(Stack<Integer> st1)
+	{
+		Stack<Integer> st2=new Stack<>();
+		while(st1.size()!=0){
+		    int top=st1.pop();
+		    if(st2.size()==0){
+		        st2.push(top);
+		        continue;
+		    }
+		    if(st2.peek()>top){
+		        while(st2.size()!=0 && st2.peek()>top)
+		        st1.push(st2.pop());
+		        st2.push(top);
+		    }else{
+		        st2.push(top);
+		    }
+		}
+		return st2;
+	} 
+
+//SORT A STACK (RECURSIVE)
+LOGIC: insert function insert 1 value at a time and sort function for all values
+public Stack<Integer> sort(Stack<Integer> st)
+	{
+	  if(st.size()==0)
+	  return st;
+	  
+	  int top=st.pop();
+	  sort(st);
+	  insert(st,top);
+	  return st;
+	}
+	public static void insert(Stack<Integer> st,int top){
+	  if(st.size()==0 || st.peek()<=top){
+	      st.push(top);
+	      return;
+	  }
+	  int top1=st.pop();
+	  insert(st,top);
+	  st.push(top1);
+	}
+
+//COUNT SORT(SORT STRING)
+    public static char[] countSort(char seq[])
+    {
+        int[] map=new int[26];
+
+        for(int i=0;i<seq.length;i++)
+        map[seq[i]-'a']++;
+
+        for(int i=1;i<26;i++)
+        map[i]+=map[i-1];
+        
+        char[] ans=new char[seq.length];
+
+        for(int i=seq.length-1;i>=0;i--){
+            int idx=map[seq[i]-'a']-1;
+            ans[idx]=seq[i];
+            map[seq[i]-'a']--;
+        }
+
+        return ans;
+    }
