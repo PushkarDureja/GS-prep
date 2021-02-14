@@ -1,0 +1,253 @@
+Min Stack
+
+int minVal;
+void push(stack<int>& s, int a){
+	// Your code goes here
+	if(s.size() == 0){
+	   s.push(a);
+	   minVal = a;
+	}
+	
+	else {
+	   if(a<minVal){
+	       s.push(2*a - minVal);
+	       minVal = a;
+	   }
+	   else 
+	    s.push(a);
+	}
+	
+}
+
+bool isFull(stack<int>& s,int n){
+	// Your code goes here
+	return s.size() == n;
+}
+
+bool isEmpty(stack<int>& s){
+	// Your code goes here
+	return s.size() == 0;
+}
+
+int pop(stack<int>& s){
+	// Your code goes here
+	if(s.size() == 0)
+	    return -1;
+	  
+	 if(s.top()<minVal){
+	     int t = minVal;
+	     minVal = 2*minVal - s.top();
+	     s.pop();
+	     
+	     return t;
+        
+	 }
+	 else {
+	     int t = s.top();
+	     s.pop();
+	     return t;
+	 }
+}
+
+int getMin(stack<int>& s){
+    
+    return minVal;
+	// Your code goes here
+}
+
+REVERSE WORDS IN A GIVEN STRING
+
+ String reverseWords(String S) {
+        int i=S.length()-1,j=S.length()-1;
+        StringBuilder sb=new StringBuilder();
+        while(j>=0){
+           while(j>=0 && S.charAt(j)!='.'){
+               j--;
+           }
+           sb.append(S.substring(j+1,i+1));
+           if(j!=-1)
+           sb.append('.');
+           i=j-1;
+           j=i;
+        }
+        return sb.toString();
+    }
+INTERSECTION N A LINKED LIST
+  public ListNode getIntersectionNode(ListNode h1, ListNode h2) {
+        if(h1==null || h2==null)
+            return null;
+        ListNode curr=h1;
+        while(curr.next!=null)
+            curr=curr.next;
+        
+        curr.next=h1;
+        ListNode slow=h2;
+        ListNode fast=h2;
+        boolean isCycle=false;
+        while(fast!=null && fast.next!=null){
+            slow=slow.next;
+            fast=fast.next.next;
+            if(slow==fast){
+                isCycle=true;
+                break;
+            }
+        }
+        if(!isCycle){
+                    curr.next=null;
+            return null;
+        }
+        fast=h2;
+        while(slow!=fast){
+            slow=slow.next;
+            fast=fast.next;
+        }
+        curr.next=null;
+        return slow;
+    }
+
+
+SIZE METHOD FOR INTERSECTION
+ public ListNode getIntersectionNode(ListNode head1, ListNode head2) {
+        if(head1==null || head2==null)
+            return null;
+       int size1=size(head1);
+         int size2=size(head2);
+         int diff=size1-size2;
+         diff=diff<0?-diff:diff;
+         ListNode curr1=size1>size2?head1:head2;
+         while(diff-->0){
+             curr1=curr1.next;
+         }
+         ListNode curr2=size1>size2?head2:head1;
+         while( curr1!=null && curr2!=null && curr1!=curr2){
+             curr1=curr1.next;
+             curr2=curr2.next;
+         }
+         if(curr1==null || curr2==null)
+         return null;
+         return curr1;
+    }
+    public int size(ListNode head){
+	    int count=0;
+	    ListNode curr=head;
+	    while(curr!=null){
+	        curr=curr.next;
+	        count++;
+	    }
+	    return count;
+	}
+
+FIRST NON REPEATING CHARACTER IN A STRING
+
+ static class pair{
+        int freq=0;
+        int idx=0;
+        public pair(int freq,int idx){
+            this.freq=freq;
+            this.idx=idx;
+        }
+    }
+    static char nonrepeatingCharacter(String S)
+    {
+        pair[] map=new pair[26];
+        for(int i=0;i<S.length();i++){
+            int vidx=S.charAt(i)-'a';
+         pair p=map[vidx];
+         if(p==null)
+         map[vidx]=new pair(0,0);
+         if(map[S.charAt(i)-'a'].freq==0){
+             map[vidx].freq=1;
+             map[vidx].idx=i;
+         }else{
+             map[vidx].freq++;
+         }
+        }
+        int ans=S.length();
+        for(int i=0;i<26;i++){
+            if(map[i]!=null && map[i].freq==1 && map[i].idx<ans)
+            ans=map[i].idx;
+        }
+        return ans==S.length()?'$':S.charAt(ans);
+    }
+FIRST NON REPEATING IN A STREAM
+
+public class pair{
+        pair prev=null;
+        pair next=null;
+        char ch='a';
+        boolean inList=true;
+        public pair(char ch){
+            this.ch=ch;
+        }
+    }
+    private pair head=null;
+    private pair tail=null;
+    public String FirstNonRepeating(String A)
+    {
+        pair[] map=new pair[26];
+        StringBuilder sb=new StringBuilder();
+        for(int i=0;i<A.length();i++){
+            pair p=map[A.charAt(i)-'a'];
+            //first occurence of character
+            if(p==null){
+                map[A.charAt(i)-'a']=addInList(A.charAt(i));//add this pair at last and save the returned address
+            }
+            //second occurence of character
+            else if(p.inList==true){
+                removeFromList(map[A.charAt(i)-'a']);
+            }
+            //mulltiple occurences
+            else{
+                ;//do nothing
+            }
+            // update answer with char at head pointer
+            if(head==null){
+                sb.append('#');
+            }else{
+                sb.append(head.ch);
+            }
+        }
+        return sb.toString();
+    }
+    public pair addInList(char ch){
+        pair nnode=new pair(ch);
+        if(head==null){//empty list
+            head=nnode;
+            tail=nnode;
+        }else{
+            tail.next=nnode;
+            nnode.prev=tail;
+            tail=nnode;
+        }
+        return nnode;
+    }
+    
+    public void removeFromList(pair p){
+        if(p==head){
+           if(head==tail){//single element
+               head.inList=false;
+               head=null;
+               return;
+           }else{
+               pair top=head;
+               head=head.next;
+               top.inList=false;
+               top.next=null;
+               head.prev=null;
+           }
+        }else if(p==tail){
+           tail.inList=false;
+           pair last=tail;
+           tail=tail.prev;
+           tail.next=null;
+           last.prev=null;
+        }else{
+            p.inList=false;
+            pair next=p.next;
+            pair prev=p.prev;
+            p.next=null;
+            p.prev=null;
+            next.prev=prev;
+            prev.next=next;
+        }
+    }
