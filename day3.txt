@@ -1,0 +1,250 @@
+QUEUE USING STACKS
+class MyQueue {
+    Stack<Integer> st1=new Stack<>();
+    Stack<Integer> st2=new Stack<>();
+    int front=0;
+    /** Initialize your data structure here. */
+    public MyQueue() {
+        
+    }
+    
+    /** Push element x to the back of queue. */
+    public void push(int x) {
+        if(st1.size()==0)
+            front=x;
+        st1.push(x);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    public int pop() {
+        if(st2.size()==0){
+            while(st1.size()!=0)
+                st2.push(st1.pop());
+        }
+        return st2.pop();
+    }
+    
+    /** Get the front element. */
+    public int peek() {
+        if(st2.size()==0)
+            return front;
+        return st2.peek();
+    }
+    
+    /** Returns whether the queue is empty. */
+    public boolean empty() {
+        return st1.size()==0 && st2.size()==0;
+    }
+}
+
+STACK USING QUEUE
+class MyStack {
+    Queue<Integer> que=new LinkedList<>();
+    /** Initialize your data structure here. */
+    int front=0;
+    public MyStack() {
+        
+    }
+    
+    /** Push element x onto stack. */
+    public void push(int x) {
+        que.add(x);
+        front=x;
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    public int pop() {
+        int size=que.size();
+        while(size--!=1){
+            front=que.peek();
+            que.add(que.poll());
+        }
+        return que.poll();
+    }
+    
+    /** Get the top element. */
+    public int top() {
+        if(que.size()==0)
+            return -1;
+        return front;
+    }
+    
+    /** Returns whether the stack is empty. */
+    public boolean empty() {
+        return que.size()==0;
+    }
+}
+
+QUICK SORT
+
+ static void quickSort(int arr[], int low, int high)
+    {
+        if(low>=high)
+        return;
+        int pivot=partition(arr,low,high);
+        quickSort(arr,low,pivot-1);
+        quickSort(arr,pivot+1,high);
+    }
+    static int partition(int arr[], int low, int high)
+    {
+        int p=arr[high];
+        int i=low,j=low;
+        while(j<=high){
+            if(arr[j]<=p){
+                arr[j]=((arr[i]+arr[j])-(arr[i]=arr[j]));
+                i++;
+            }
+            j++;
+        }
+        return i-1;
+    } 
+
+REVERSE LINKEDLIST IN GROUP OF ‘K’
+
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode curr=head;
+        int count=1;
+        while(count<k && curr!=null){
+           curr=curr.next;
+            count++;
+        }
+        if(curr==null)
+            return head;
+        ListNode fhead=curr.next;
+        curr.next=null;
+        ListNode toReturn=reverseList(head);
+        ListNode forw=reverseKGroup(fhead,k);
+        head.next=forw;
+        return toReturn;
+        
+    }
+     public ListNode reverseList(ListNode head) {
+    if (head == null || head.next == null) return head;
+        ListNode n=head.next;
+        ListNode h=reverseList(head.next);
+        n.next=head;
+        head.next=null;
+        return h;
+}
+}
+
+K-AWAY LEETCODE
+ List<Integer> ans=new ArrayList<>();
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
+        List<TreeNode> list=path(root,target);
+
+        TreeNode block=null;
+        int i=0;
+        while(i<list.size()){
+            kDown(list.get(i),block,k-i);
+            block=list.get(i);
+            i++;
+        }
+        return ans;
+    }
+    public  List<TreeNode> path(TreeNode root,TreeNode tar){
+        if(root==null)
+            return null;
+        if(root.val==tar.val){
+            List<TreeNode> base=new ArrayList<>();
+            base.add(root);
+            return base;
+        }
+        List<TreeNode> left=path(root.left,tar);
+        if(left!=null){
+            left.add(root);
+            return left;
+        }
+         List<TreeNode> right=path(root.right,tar);
+        if(right!=null){
+            right.add(root);
+            return right;
+        }
+        return null;
+    }
+    public  void kDown(TreeNode root,TreeNode block,int k){
+        if(root==block)
+            return;
+        if(root==null)
+            return;
+        if(k==0){
+            ans.add(root.val);
+            return;
+        }
+        kDown(root.left,block,k-1);
+        kDown(root.right,block,k-1);
+        
+    }
+MERGE WITHOUT EXTRA SPACE
+
+public static void merge(int arr1[], int arr2[], int n, int m) 
+    {
+        // code here  int l1 = arr1.length, l2 = arr2.length;
+        int l1 = arr1.length, l2 = arr2.length;
+        int ol = l1 + l2;
+        int gap = (ol / 2)+(ol%2);
+        while (gap >0) {
+            // sort left
+            int i = 0;
+            for (i = 0; i + gap < l1; i++) {
+                if (arr1[i] >= arr1[i + gap]) {
+                    arr1[i + gap] = ((arr1[i] + arr1[i + gap]) - (arr1[i] = arr1[i + gap]));
+                }
+            }
+            // sort combination
+            for (int k = i, l = 0; k < l1 && l < l2; k++, l++) {
+                if (arr1[k] >= arr2[l]) {
+                    arr2[l] = ((arr1[k] + arr2[l]) - (arr1[k] = arr2[l]));
+                }
+            }
+            // sort right
+            for (int j = 0; j + gap < l2; j++) {
+                if (arr2[j] >= arr2[j + gap]) {
+                    arr2[j + gap] = ((arr2[j] + arr2[j + gap]) - (arr2[j] = arr2[j + gap]));
+                }
+            }
+            if(gap<=1)
+            gap=0;
+            else
+            gap=(gap/2)+(gap%2);
+        }
+    }
+MIN COST TO CONNECT ROPE
+  long minCost(long arr[], int n) {
+        PriorityQueue<Long> pq=new PriorityQueue<>();
+        long ans=0;
+        for(long ele:arr)
+        pq.add(ele);
+        while(pq.size()>1){
+            long t1=pq.poll();
+            long t2=pq.poll();
+            ans+=t1+t2;
+            pq.add(t1+t2);
+        }
+        return ans;
+    }
+THIRD MAXIMUM IN AN ARRAY
+public int thirdMax(int[] nums) {
+        long first=Long.MIN_VALUE;
+        long second=Long.MIN_VALUE;
+        long third=Long.MIN_VALUE;
+        for(int ele:nums){
+            if(ele==first || ele==second || ele==third)
+                continue;
+            if(ele>first){
+                third=second;
+                second=first;
+                first=ele;
+            }else if(ele>second){
+                third=second;
+                second=ele;
+            }else if(ele>third){
+                third=ele;
+            }
+        }
+        // System.out.println(first+" "+second+" "+third);
+        return third==Long.MIN_VALUE?(int)first:(int)third;
+    }
+
+
